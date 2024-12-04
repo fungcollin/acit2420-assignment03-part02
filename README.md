@@ -27,7 +27,7 @@ This repository will teach you how to setup an index.html file to run a designat
 ### Task 1: System User Creation and Ownership
 ---
 
-**STEP 1**: Type the command to create a system user:
+**STEP 1**: Type the command to create a system user[^1]:
 
 ```bash
 sudo useradd -r -d /var/lib/webgen -s /usr/sbin/nologin webgen
@@ -187,7 +187,7 @@ Enter the following command to create a new server block to host index.html:
 ```bash
 sudo nvim /etc/nginx/sites-available/webgen.conf
 ```
-Enter the following script into `webgen.conf`:
+Enter the following script into `webgen.conf`[^2]:
 ```ini
 server {
     listen 80;
@@ -213,12 +213,12 @@ sudo ln -s /etc/nginx/sites-available/webgen.conf /etc/nginx/sites-enabled/
 
 **STEP 6**: Update `nginx.conf` with `sites-enabled`
 
-Enter the following code to access `nginx.conf`
+Enter the following code to access `nginx.conf`:
 ```bash
 sudo nvim /etc/nginx/sites-enabled/nginx.conf
 ```
 
-Enter the below script to `nginx.conf`
+Enter the below script to `nginx.conf`[^3]:
 ```bash
 http {
     ...
@@ -341,7 +341,7 @@ This screenshot displays the ngxin details to the corresponding IP droplet:
 ## Introduction
 This repository's goal is to guide you in setting up a load balancer on Digital Ocean and allow download of two files from two different IPs. 
 
-### Task 1: Create Two Droplets and One Load Balancer
+### Task 1: Create Two Droplets
 ---
 
 **STEP 1**: Create two droplets on Digital Ocean:
@@ -356,18 +356,19 @@ This repository's goal is to guide you in setting up a load balancer on Digital 
 
 ![Screenshot](/assets/droplet-tag.png)
 
-
-**STEP 4**: Create load balancer:
+### Task 2: Create Load Balancer:
+---
+**STEP 1**: Create load balancer:
 
 ![Screenshot](/assets/load-balancer-setup.png)
 
-![IMPORTANT] Ensure the droplets and load balancer are on the same datacenter; Otherwise, they will not work together. 
+[!IMPORTANT] Ensure the droplets and load balancer are on the same datacenter; Otherwise, they will not work together. 
 
-**STEP 5**: Connect the load balancer to the droplet tagged `web`:
+**STEP 2**: Connect the load balancer to the droplet tagged `web`:
 
 ![Screenshot](/assets/load-balancer-droplet-tag.png)
 
-### Task 2: Set Up `Documents` Directory
+### Task 3: Set Up `Documents` Directory
 ---
 
 **STEP 1**: Clone new starter files
@@ -413,7 +414,7 @@ sudo touch /var/lib/webgen/HTML/index.html
 sudo chown -R webgen:webgen /var/lib/webgen
 ```
 
-### Task 3: Modify `webgen.conf`
+### Task 4: Modify `webgen.conf`
 ---
 
 **STEP 1**: Setup `webgen.conf`
@@ -442,10 +443,33 @@ server {
    }
 }
 ```
+- `alias`: replaces URL path [^4] [^5]
 - `autoindex`: Enables the directory listing [^4] [^5]
 - `autoindex_exact_size`: Displays file sizes in a human-readable way [^4] [^5]
 - `autoindex_localtime`: Displays file timestamps [^4] [^5]
 
+### Task 5: Confirm Working `Document` Directory 
+
+**STEP 1**: Copy IP address from created [load balancer](#task-2-create-load-balancer).
+
+**STEP 2** Visit the IP address:
+```bash
+http://paste-load-balancer-ip-here
+```
+
+**STEP 3** Visit the `/documents` page
+```bash
+http://paste-load-balancer-ip-here/documents
+```
+
+The below two images are results of the load balancer and two droplets tagged:
+
+![SCREENSHOT](/assets/load-balancer-ip-01.png)
+![SCREENSHOT](/assets/load-balancer-ip-02.png)
+
+Lastly, this image is the result of the `documents` page:
+
+![SCREENSHOT](/assets/load-balancer-documents-index.png)
 
 ### References:
 ---
