@@ -314,7 +314,15 @@ To                         Action      From
 ### Task 5: Screenshot of Droplet 
 ---
 
-Image Here
+This screenshot displays the ngxin details to the corresponding IP droplet:
+
+![Screenshot](/assets/droplet-ip.png)
+
+<br>
+<br>
+<br>
+
+# Congratulations for reaching the end of part one tutorial !!!
 
 <br>
 <br>
@@ -333,12 +341,120 @@ Image Here
 ## Introduction
 This repository's goal is to guide you in setting up a load balancer on Digital Ocean and allow download of two files from two different IPs. 
 
-## Creating a Load Balancer
+### Task 1: Create Two Droplets and One Load Balancer
+---
+
+**STEP 1**: Create two droplets on Digital Ocean:
+
+![Screenshot](/assets/create-droplet.png)
+
+**STEP 2**: Add `web` tag to the two created droplets:
+
+![Screenshot](/assets/droplet-overview-tag.png)
+
+**STEP 3**: Confirm the `web` tag has been attached:
+
+![Screenshot](/assets/droplet-tag.png)
+
+
+**STEP 4**: Create load balancer:
+
+![Screenshot](/assets/load-balancer-setup.png)
+
+![IMPORTANT] Ensure the droplets and load balancer are on the same datacenter; Otherwise, they will not work together. 
+
+**STEP 5**: Connect the load balancer to the droplet tagged `web`:
+
+![Screenshot](/assets/load-balancer-droplet-tag.png)
+
+### Task 2: Set Up `Documents` Directory
+---
+
+**STEP 1**: Clone new starter files
+
+Enter the below command to git clone the required directory:
+```bash
+git clone https://git.sr.ht/~nathan_climbs/2420-as3-p2-start
+```
+
+**STEP 2**: Move `generate_file` to required directory
+
+Enter the below command to move `generate_file` to `/var/lib/webgen/bin` directory:
+```bash
+sudo mv 2420-as3-p2-start/generate_index /var/lib/webgen/bin
+```
+
+**STEP 3**: Give required file privilges
+
+Enter the below command to give `generate_index` executable permission:
+```bash
+sudo chmod +x /var/lib/webgen/bin/generate_index
+```
+
+**STEP 4**: Create `documents` directory in `/var/lib/webgen` directory
+
+Enter the below command to create directory:
+```bash
+sudo mkdir -p /var/lib/webgen/documents
+```
+
+**STEP 5**: Create two files: `file-one` and `file-two` in `.../documents/` directory created in step 4
+```bash
+sudo touch /var/lib/webgen/documents/file /var/lib/webgen/documents/file-two
+```
+
+**STEP 6**: Create `index.html` file in `/var/lib/web/gen/HTML` directory
+```bash
+sudo touch /var/lib/webgen/HTML/index.html
+```
+
+**STEP 7**: Redefine `webgen` ownership if required
+```bash
+sudo chown -R webgen:webgen /var/lib/webgen
+```
+
+### Task 3: Modify `webgen.conf`
+---
+
+**STEP 1**: Setup `webgen.conf`
+
+Enter the below code into `webgen.conf` as a simple method to access documents/files in the `documents` directory we previously created:
+
+```bash
+server {
+   listen 80;
+   listen [::]:80;
+
+   server_name localhost.webgen;
+
+    location / {
+       root /var/lib/webgen/HTML;
+       index index.html;
+       try_files $uri $uri/ =404;
+   }
+
+   # Handle /documents/ requests
+   location /documents {
+       alias /var/lib/webgen/documents;
+       autoindex on;
+       autoindex_exact_size off;
+       autoindex_localtime on;
+   }
+}
+```
+- `autoindex`: Enables the directory listing [^4] [^5]
+- `autoindex_exact_size`: Displays file sizes in a human-readable way [^4] [^5]
+- `autoindex_localtime`: Displays file timestamps [^4] [^5]
+
 
 ### References:
 ---
-[1]“2420-notes/week-eleven.md · main · cit_2420 / 2420-notes-F24 · GitLab,” GitLab, Nov. 19, 2024. https://gitlab.com/cit2420/2420-notes-f24/-/blob/main/2420-notes/week-eleven.md‌
+[^1]: “2420-notes/week-eleven.md · main · cit_2420 / 2420-notes-F24 · GitLab,” GitLab, Nov. 19, 2024. https://gitlab.com/cit2420/2420-notes-f24/-/blob/main/2420-notes/week-eleven.md‌
 
-[2]“2420-notes/week-twelve.md · main · cit_2420 / 2420-notes-F24 · GitLab,” GitLab, Nov. 19, 2024. https://gitlab.com/cit2420/2420-notes-f24/-/blob/main/2420-notes/week-twelve.md
+[^2]: “2420-notes/week-twelve.md · main · cit_2420 / 2420-notes-F24 · GitLab,” GitLab, Nov. 19, 2024. https://gitlab.com/cit2420/2420-notes-f24/-/blob/main/2420-notes/week-twelve.md
 
-[3]“nginx - ArchWiki,” Archlinux.org, 2020. https://wiki.archlinux.org/title/Nginx
+[^3]: “nginx - ArchWiki,” Archlinux.org, 2020. https://wiki.archlinux.org/title/Nginx
+
+[^4]: “2420-notes/week-thirteen.md · main · cit_2420 / 2420-notes-F24 · GitLab,” GitLab, Nov. 30, 2024. https://gitlab.com/cit2420/2420-notes-f24/-/blob/main/2420-notes/week-thirteen.md
+
+[^5]: “ngx_http_core_module - alias,” Nginx.org, 2024. https://nginx.org/en/docs/http/ngx_http_core_module.html#alias
